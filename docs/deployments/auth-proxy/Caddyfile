@@ -1,0 +1,33 @@
+# Global options
+{
+    admin off
+}
+
+# Bind to Render's dynamic PORT environment variable (defaulting to 8080)
+:{$PORT:8080} {
+    # Public health check endpoint for Render/platform probes
+    respond /healthz 200 {
+        body "Auth proxy healthy"
+    }
+
+    # Match authorized requests by Authorization header, X-API-Key, or query token
+    @authorized {
+        header Authorization "Bearer {$MCP_API_KEY}"
+        header X-API-Key "{$MCP_API_KEY}"
+        query token={$MCP_API_KEY}
+    }
+
+    # Reject unauthorized requests with 401
+    handle {
+        respond "Unauthorized: Invalid or missing MCP API key" 401
+    }
+
+    # Reverse proxy authorized traffic to keep-mcp backend
+    handle @authorized {
+        reverse_proxy {$BACKEND_URL:http://keep-mcp:8080} {
+            # Critical settings for Server-Sent Events (SSE) and streaming HTTP:
+            flush_interval -1
+            buffer_requests false
+        }
+    }
+}
