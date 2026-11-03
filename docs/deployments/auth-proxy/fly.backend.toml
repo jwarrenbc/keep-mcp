@@ -1,0 +1,44 @@
+# fly.toml app configuration file for keep-mcp (Backend Private App)
+#
+# Deploy as a private Fly Machine without public IPs:
+#   fly launch --no-deploy
+#   fly scale count 1 (or 2 for high availability)
+#
+# The Caddy proxy connects to this backend over Fly 6PN private networking:
+#   http://keep-mcp-backend.internal:8080
+
+app = 'keep-mcp-backend'
+primary_region = 'sea'
+
+[build]
+  dockerfile = '../../Dockerfile'
+  ignorefile = '../../.dockerignore'
+
+[env]
+  PORT = '8080'
+  MCP_TRANSPORT = 'sse'
+  UNSAFE_MODE = 'false'
+
+# No [http_service] here: keeping this app private within the Fly 6PN mesh.
+# Internal services connect directly over http://keep-mcp-backend.internal:8080.
+
+[[services]]
+  internal_port = 8080
+  protocol = 'tcp'
+
+  [[services.tcp_checks]]
+    interval = '15s'
+    timeout = '2s'
+    grace_period = '10s'
+
+  [[services.http_checks]]
+    interval = '15s'
+    timeout = '3s'
+    grace_period = '10s'
+    method = 'get'
+    path = '/healthz'
+
+[vm]
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 512
