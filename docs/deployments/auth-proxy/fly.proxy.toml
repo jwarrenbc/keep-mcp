@@ -1,11 +1,5 @@
-# fly.toml app configuration file for Caddy Auth Proxy (Public Ingress)
-#
-# This public gateway receives traffic from the internet over HTTPS,
-# validates the MCP API key, and forwards authorized requests across
-# Fly's private 6PN mesh to http://keep-mcp-backend.internal:8080.
-
 app = 'keep-mcp-proxy'
-primary_region = 'sea'
+primary_region = 'sjc'
 
 [build]
   dockerfile = 'Dockerfile'

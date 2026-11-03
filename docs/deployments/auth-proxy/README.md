@@ -125,8 +125,11 @@ From the repo root:
 
 Your MCP endpoint is now reachable securely at:
 ```text
-https://<your-proxy-app-name>.fly.dev/sse?token=<your-secret-api-key>
+https://<your-proxy-app-name>.fly.dev/mcp?token=<your-secret-api-key>
 ```
+Or via HTTP headers:
+- `Authorization: Bearer <your-secret-api-key>`
+- `X-API-Key: <your-secret-api-key>`
 
 ---
 
