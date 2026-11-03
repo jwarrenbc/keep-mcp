@@ -128,18 +128,6 @@ Your MCP endpoint is now reachable securely at:
 https://<your-proxy-app-name>.fly.dev/mcp?token=<your-secret-api-key>
 ```
 Or via HTTP headers:
+- https://<your-proxy-app-name>.fly.dev/mcp
 - `Authorization: Bearer <your-secret-api-key>`
 - `X-API-Key: <your-secret-api-key>`
-
----
-
-## Deploying on Render
-
-1. **Backend as a Private Service:**
-   - In Render Dashboard, create a **Private Service** from the repo root using the root `Dockerfile`.
-   - Set `GOOGLE_EMAIL` and `GOOGLE_MASTER_TOKEN`.
-   - Note the internal service address (e.g. `http://keep-mcp:8080`).
-
-2. **Proxy as a Public Web Service:**
-   - Create a **Web Service** using `docs/deployments/auth-proxy/Dockerfile`.
-   - Set `MCP_API_KEY` and `BACKEND_URL=http://keep-mcp:8080`.
